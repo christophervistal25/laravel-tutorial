@@ -1,5 +1,10 @@
 @extends('layouts.app')
 @section('content')
+@if(Session::has('success'))
+<div class="alert alert-success p-4">
+    {{ Session::get('success') }}
+</div>
+@endif
 <div class="float-end mb-3">
     <a href="{{ route('employee.create') }}" class="btn btn-primary shadow">Add new employee</a>
 </div>
@@ -23,8 +28,8 @@
             <td>{{ $employee->lastname }}</td>
             <td>{{ $employee->suffix }}</td>
             <td class='text-center'>
-                <a class='btn btn-success' href="">EDIT</a>
-                <a class='btn btn-info' href="">SHOW</a>
+                <a class='btn btn-success' href="{{ route('employee.edit', $employee->employee_id) }}">EDIT</a>
+                <a class='btn btn-info' href="{{ route('employee.show', $employee->employee_id) }}">SHOW</a>
                 <a class='btn btn-danger' href="">DELETE</a>
             </td>
 

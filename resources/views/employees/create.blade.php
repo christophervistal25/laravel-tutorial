@@ -7,17 +7,9 @@
     <li>{{ $error }}</li>
     @endforeach
 </div>
-@elseif(Session::has('success'))
-<div class="alert alert-success p-4">
-    {{ Session::get('success') }}
-</div>
 @endif
 <form method="POST" action="{{ route('employee.store') }}">
     @csrf
-    <div class="form-group">
-        <label>Employee ID</label>
-        <input type="text" name="employee_id" class="form-control">
-    </div>
 
     <div class="form-group mt-3">
         <label>Firstname</label>
@@ -37,9 +29,10 @@
     <div class="form-group mt-3">
         <label>Suffix</label>
         <select class='form-control' name="suffix">
-            <option value="Jr">Jr.</option>
-            <option value="Sr">Sr.</option>
-            <option value="II">II</option>
+            <option value="">-</option>
+            @foreach($suffix as $s)
+            <option value="{{ $s }}">{{ $s }}</option>
+            @endforeach
         </select>
     </div>
 

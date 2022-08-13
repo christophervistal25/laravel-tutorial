@@ -27,7 +27,10 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        return view('employees.create');
+        $suffix = Employee::SUFFIX;
+        return view('employees.create', [
+            'suffix' => $suffix,
+        ]);
     }
 
     /**
@@ -38,25 +41,23 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        $suffix = ['Jr', 'Sr', 'II'];
+        $suffix = Employee::SUFFIX;
 
         $this->validate($request, [
-            'employee_id' => ['required', 'unique:employees,employee_id'],
             'firstname' => ['required', 'max:50'],
             'middlename' => ['nullable', 'min:2', 'max:50'],
             'lastname' => ['required', 'max:50'],
-            'suffix' => ['required', 'in:' . implode(',', $suffix)],
+            'suffix' => ['nullable', 'min:2', 'in:' . implode(',', $suffix)],
         ]);
 
         Employee::create([
-            'employee_id' => $request->employee_id,
             'firstname'   => $request->firstname,
             'middlename'  => $request->middlename,
             'lastname'    => $request->lastname,
             'suffix'      => $request->suffix,
         ]);
 
-        return back()->with('success', 'Employee created successfully.');
+        return redirect()->route('employee.index')->with('success', 'Employee created successfully.');
     }
 
     /**
@@ -65,9 +66,12 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($employeeID)
     {
-        //
+        $employee = Employee::find($employeeID);
+        return view('employees.show', [
+            'employee' => $employee,
+        ]);
     }
 
     /**
@@ -76,9 +80,14 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($employeeID)
     {
-        //
+        $employee = Employee::find($employeeID);
+        $suffix = Employee::SUFFIX;
+        return view('employees.edit', [
+            'employee' => $employee,
+            'suffix' => $suffix,
+        ]);
     }
 
     /**
@@ -88,9 +97,24 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $employeeID)
     {
-        //
+        $suffix = Employee::SUFFIX;
+        $this->validate($request, [
+            'firstname' => ['required', 'max:50'],
+            'middlename' => ['nullable', 'min:2', 'max:50'],
+            'lastname' => ['required', 'max:50'],
+            'suffix' => ['nullable', 'min:2', 'in:' . implode(',', $suffix)],
+        ]);
+
+        $employee = Employee::find($employeeID);
+        $employee->firstname = $request->firstname;
+        $employee->middlename = $request->middlename;
+        $employee->lastname = $request->lastname;
+        $employee->suffix = $request->suffix;
+        $employee->save();
+
+        return redirect()->route('employee.index')->with('success', 'Employee updated successfully.');
     }
 
     /**
